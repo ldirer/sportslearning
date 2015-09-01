@@ -1,0 +1,25 @@
+{% extends 'tennis/base.html' %}
+  {% block content_summary %}
+      <div class="starter-template">
+        <h1>Choisissez le match que vous voulez explorer</h1>
+          <ul>
+            {% for match in match_list %}
+            <li>
+                Match "{{ match.name }}" joué le <a href="{% url 'tennis.views.match_detail' match.id %}"> {{ match.timestamp }}</a>
+                {% if match.player_one.name != '' and match.player_two.name != '' %}
+                 entre {{ match.player_one.name }} et {{ match.player_two.name }}.
+                {% else %}
+                {% endif %}
+                <br>
+                <a href="{% url 'tennis.views.match_detail' match.id %}">Explorer les statistiques</a><br>
+            </li>
+            {% empty %}
+              <p>Vous n'avez encore disputé aucun match!</p>
+            {% endfor %}
+          </ul>
+
+        <!--<p class="lead">Use this document as a way to quickly start any new project.<br>
+        All you get is this text and a mostly barebones HTML document.</p> -->
+      </div>
+  {% endblock %}
+

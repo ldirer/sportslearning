@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="{% static 'ico/favicon.ico' %}">
+
+  <title>Sports'Learning</title>
+
+
+  <!-- Latest compiled and minified CSS & JS -->
+  <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!-- Bootstrap js needs jquery -->
+  <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+
+
+  <!-- Bootstrap core CSS -->
+  {#    <link href="{% static 'bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet">#}
+{#  <link href="{% static 'external/css/bootstrap.min.css' %}" rel="stylesheet">#}
+
+
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'external/css/starter-template.css' %}"
+        rel="stylesheet">
+  {#      <link href="{% static 'twitter_bootstrap/static/twitter_bootstrap/theme.css' %}" rel="stylesheet">#}
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse"
+              data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Sports'Learning</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class=""><a href="{% url 'match_list_user' %}">Mes
+          Matches</a></li>
+        <!--<li><a href="#Games">Mes Matches</a></li> -->
+        {% if match %}
+          <li class="{% if user.nav_state == "stats" %}active{% endif %}">
+            <a href="{% url 'tennis.views.match_detail' match.id %}">
+              Statistiques générales
+            </a>
+          </li>
+          <li class="{% if user.nav_state == "dashboard" %}active{% endif %}">
+            <a href="{% url 'tennis.views.dashboard' match.id %}">
+              Dashboard du match
+            </a>
+          </li>
+          <li class="dropdown {% if user.nav_state == "zones" %}active{% endif %}">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              Zones de jeu
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <a href="{% url 'tennis.views.courts_with_zone_data' match.id %}">
+                  Coups droits et revers
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="{% url 'tennis.views.court_with_zone_data_serve' match.id %}">
+                  Services
+                </a>
+              </li>
+            </ul>
+          </li>
+        {% endif %}
+
+        <!--<li><a class="navbar-right" href="#Quentin">Quentin</a></li>-->
+      </ul>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#Profil">{{ user }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</div>
+
+
+<div class="container">
+  {% block content_summary %}
+  {% endblock %}
+</div>
+<!-- /.container -->
+{% block match_stats %}
+{% endblock %}
+{% block qunit %}
+{% endblock %}
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{#    <script src="{% static 'bootstrap-3.1.1-dist/js/bootstrap.min.js' %}"></script>#}
+
+
+
+<footer class="footer">
+  <p class="text-muted text-left" style="margin-left: 15px">
+    Sports'Learning
+  </p>
+</footer>
+</body>
+
+<link rel="stylesheet" href="{% static 'own/css/layout.css' %}"/>
+
+</html>

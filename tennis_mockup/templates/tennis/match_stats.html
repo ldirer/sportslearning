@@ -1,0 +1,58 @@
+{% extends 'tennis/base.html' %}
+{% block content_summary %}
+  <div class="starter-template">
+    <h1>Vous explorez le match entre {{ match.player_one.name }}
+      et {{ match.player_two.name }}
+    </h1>
+  </div>
+{% endblock %}
+{% block match_stats %}
+  <div class="container">
+    {% load static %}
+    {% load verbose_names %}
+    <div class="row">
+      <div class="col-md-3">
+
+      </div>
+      <div class="col-md-6">
+        <table class="table table-condensed">
+          <thead>
+          <tr>
+            <th class="text-center">{{ match.player_one.name }}</th>
+            <th class="text-center">Statistiques</th>
+            <th class="text-center">{{ match.player_two.name }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for field, value_p1, value_p2 in float_board_key_values_list %}
+            <tr>
+              <td class="text-center">{{ value_p1|floatformat:-1 }}%</td>
+              <td class="text-center">{{ field }}</td>
+              <td class="text-center">{{ value_p2|floatformat:-1 }}%</td>
+            </tr>
+          {% endfor %}
+          {% for field, value_p1, value_p2 in int_board_key_values_list %}
+            <tr>
+              <td class="text-center">{{ value_p1|floatformat:-1 }}</td>
+              <td class="text-center">{{ field }}</td>
+              <td class="text-center">{{ value_p2|floatformat:-1 }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-3">
+      </div>
+
+      {% block objectives %}
+      {% endblock %}
+    </div>
+  </div>
+
+{#  <script type="text/javascript"#}
+{#          src="{% static 'external/js/qunit/qunit-1.14.0.js' %}"></script>#}
+{#  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>#}
+{#  <script type="text/javascript"#}
+{#          src="{% static 'external/js/bootstrap/bootstrap.min.js' %}"></script>#}
+
+{% endblock %}

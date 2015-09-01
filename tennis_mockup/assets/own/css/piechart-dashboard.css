@@ -1,0 +1,16 @@
+/*body {*/
+  /*overflow-y:scroll;*/
+/*}*/
+
+/*text {*/
+  /*font: 2vw sans-serif;*/
+/*}*/
+
+.center-block {float: none !important}
+
+.piechart-dashboard {
+  width: 100%;
+  height: auto;
+  border: 2px;
+  font-size: 2vw;
+}

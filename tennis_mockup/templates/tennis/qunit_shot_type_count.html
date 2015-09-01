@@ -1,0 +1,21 @@
+{% extends 'tennis/base.html' %}
+    {% block qunit %}
+        {% load static %}
+ 
+      <link rel="stylesheet" href="{% static 'external/css/qunit-1.14.0.css' %}">
+      <script src="{% static 'external/js/qunit/qunit-1.14.0.js' %}"></script>
+      <script src="{% static 'own/js/get_shot_type_pie_chart.js' %}"></script>
+      <script src="{% static 'own/tests/get_shot_type_pie_chart.tests.js' %}"></script>
+      <script src="{% static 'own/js/rally_length.js' %}"></script>
+      <script src="{% static 'own/tests/rally_length.tests.js' %}"></script>
+
+
+      <div id="qunit"></div>
+    <body>
+	<h1 id="qunit-header">QUnit Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+{% endblock %}

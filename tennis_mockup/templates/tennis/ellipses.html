@@ -1,0 +1,117 @@
+{% extends 'tennis/base.html' %}
+  {% block content_summary %}
+      <div class="starter-template">
+        <h1>Vous explorez le match entre {{ match.player_one.name }} et {{ match.player_two.name }} (6-3 7-5)
+        </h1>
+      </div>
+  {% endblock %}
+  {% block match_stats %}
+   <div class="container">
+      {% load static %}
+      {% load verbose_names %}
+      <div class="row">
+          <div class="col-md-8">
+          <table class="table table-condensed">
+              <thead>
+                <tr>
+                  <th>{{ match.player_one.name }}</th>
+                  <th>Statistiques</th>
+                  <th>{{ match.player_two.name }}</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for field, value_p1, value_p2 in board_key_values_list %}
+                  <tr>
+                    <td>{{ value_p1 }}</td>
+                    <td>{{ field }}</td>
+                    <td>{{ value_p2 }}</td>
+                  </tr>
+              {% endfor %}
+
+              </tbody>
+          </table>
+          </div>
+          {% block objectives %}
+          {% endblock %}
+      </div>
+      <div class="row">
+          <div class="col-md-4" id="court">
+              <h2>Zones d'impact</h2>
+              <div class="btn-group" data-toggle="buttons">
+              {% for shot_type, pretty_shot_type in SHOT_TYPE_CHOICES %}
+                  <label class="btn btn-primary active">
+                    <input type="checkbox" checked=True id={{ shot_type }}> {{ pretty_shot_type }}
+                  </label>
+              {% endfor %}
+              </div>
+          </div>
+          <div class="col-md-4" id="piechart">
+              {% block pie_chart %}
+              {% endblock %}
+          </div>
+      <div class="col-md-4" id="court_placement">
+              <h2>Zones de prise de balle</h2>
+              <div class="btn-group" data-toggle="buttons">
+              {% for shot_type, pretty_shot_type in SHOT_TYPE_CHOICES %}
+                  <label class="btn btn-primary active">
+                    <input type="checkbox" checked=True id={{ shot_type }}> {{ pretty_shot_type }}
+                  </label>
+              {% endfor %}
+              </div>
+          </div>
+      </div>
+   </div>
+
+    <script type="text/javascript" src="{% static 'external/css/qunit-1.14.0.css' %}"></script>
+    <script type="text/javascript" src="{% static 'external/js/qunit/qunit-1.14.0.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
+    <script type="text/javascript" src="{% static 'external/js/bootstrap/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'own/js/tennis_court_perso.js' %}"></script>
+    <script type="text/javascript" src="{% static 'own/js/draw_ellipses.js' %}"></script>
+
+    <script type="text/javascript">
+        var id = "{{ match.id }}";
+        var shot_type_verbose_names = {{shot_type_verbose_names|safe}};
+        console.log(shot_type_verbose_names);
+        console.log(id);
+
+        $(document).ready(function() {
+            var selector_impact = '#court';
+            var selector_placement = '#court_placement';
+            draw_court(selector_impact);
+            draw_court(selector_placement);
+        });
+
+        $(document).ready(function() {
+            var selector_impact = '#court';
+            var selector_placement = '#court_placement';
+            $.getJSON('../../api/matches/' + "{{ match.id }}" + '?format=json',
+                    function (data) {
+                        draw_ellipses_master(selector_impact, data, 'end_position');
+                        draw_ellipses_master(selector_placement, data, 'start_position');
+                    });
+
+{#            $.getJSON("{{ match.id }}" + '/zone_data', function(data) {#}
+{#                console.log(data);#}
+{#                var zones_impact = data['zones_impact'];#}
+{#                var zones_position = data['zones_position'];#}
+{#                console.log(zones_impact);#}
+{#                zones(selector_impact, zones_impact);#}
+{#                zones(selector_placement, zones_position);#}
+{#            });#}
+            //var data_shots = get_data_shots(data.points);
+            //pie_chart_shot_type(data_shots);
+        });
+{##}
+{##}
+{##}
+{#        $.getJSON('../../tennis/api/matches/' + "{{ match.id }}" + '?format=json', callbackFuncWithData);#}
+{#        function callbackFuncWithData(data)#}
+{#        {#}
+{#        }#}
+
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'own/css/tennis_court.css' %}">
+
+  {% endblock %}

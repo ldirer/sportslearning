@@ -1,0 +1,218 @@
+{% extends 'tennis/base.html' %}
+{% block content_summary %}
+  <div class="starter-template">
+    <h1>Vous explorez le match entre {{ match.player_one.name }}
+      et {{ match.player_two.name }}
+    </h1>
+    <h4>
+      Ici ne sont affichés que vos revers et vos coups droits<br>
+      <a href="{% url 'court_with_zone_data_serve' match.id %}">
+        Voir mes services
+      </a>
+    </h4>
+  </div>
+{% endblock %}
+{% block match_stats %}
+  <div class="container-fluid">
+    {% load static %}
+    <div class="row row-fluid">
+      <div class="col-md-4" id="court">
+        <h2 class="text-center">Zones d'impact</h2>
+      </div>
+      <div class="col-md-3" id="filters">
+        <div class="row">
+          <h2 class="text-center">
+            Filtrez les données
+          </h2>
+        </div>
+        <form role="form">
+          <div class="row">
+            <div class="col-md-6" id="shot_type">
+              {% for shot_type, pretty_shot_type in SHOT_TYPE_CHOICES %}
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" checked=True
+                           id={{ shot_type }}> {{ pretty_shot_type }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="col-md-6" id="player_scoring">
+              {% comment %}
+                  Hack to get the right values associated with the labels.
+                  I don't know how to negate a variable in a template.
+                  {% endcomment %}
+              {% if user_player_bool %}
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" checked=True id="1">Points gagnés
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" checked=True id="0">Points perdus
+                  </label>
+                </div>
+              {% else %}
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" checked=True id="0"> Points gagnés
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" checked=True id="1"> Points perdus
+                  </label>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 form-group" id="special_shot">
+              {% for special_shot, pretty_special_shot in SPECIAL_SHOT_CHOICES %}
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" checked=True id={{ special_shot }}>
+                    {{ pretty_special_shot }}
+                  </label>
+                </div>
+              {% endfor %}
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" checked=True id="R">
+                  Retour de service
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" checked=True id="N">
+                  Fond de court
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-6" id="conclusion">
+              <div class="radio">
+                <label>
+                  <input type="radio" name="conclusions" id="W"> Coups gagnants
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="conclusions" id="U"> Fautes
+                  directes
+                </label>
+              </div>
+              <div class="radio active">
+                <label>
+                  <input type="radio" name="conclusions" id="R"> Fautes
+                  provoquées
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="conclusions" checked id="All"> Tous
+                  les coups
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-4" id="court_placement">
+        <h2 class="text-center">Zones de prise de balle</h2>
+      </div>
+    </div>
+  </div>
+
+{#  <script type="text/javascript"#}
+{#          src="{% static 'external/css/qunit-1.14.0.css' %}"></script>#}
+{#  <script type="text/javascript"#}
+{#          src="{% static 'external/js/qunit/qunit-1.14.0.js' %}"></script>#}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+{#  <script type="text/javascript"#}
+{#          src="{% static 'external/js/bootstrap/bootstrap.min.js' %}"></script>#}
+  <script type="text/javascript"
+          src="{% static 'own/js/tennis_court_half_perso.js' %}"></script>
+  <script type="text/javascript"
+          src="{% static 'own/js/draw_ellipses.js' %}"></script>
+
+  <script type="text/javascript">
+    var id = "{{ match.id }}";
+    var shot_type_verbose_names = {{ shot_type_verbose_names|safe }};
+    console.log(shot_type_verbose_names);
+    console.log(id);
+
+    $(document).ready(function () {
+      function draw_courts_with_zones() {
+        var selector_impact = '#court';
+        var selector_placement = '#court_placement';
+        draw_court(selector_impact);
+        draw_court(selector_placement);
+
+        function display_zones(data) {
+          console.log(data);
+          var zones_impact = data['zones_impact'];
+          var zones_position = data['zones_position'];
+          console.log(zones_impact);
+          zones(selector_impact, zones_impact);
+          zones(selector_placement, zones_position);
+        }
+
+
+        $('label, option').click(function () {
+          {#                    var conclusions = $('#conclusion');#}
+          {#                    conclusions.find('#R').click(function () {#}
+          {#                        if(conclusions.find('#R').prop("checked")) {#}
+          {#                        conclusions.find('#W').prop("checked", true);#}
+          {#                        conclusions.find('#U').prop("checked", true)#}
+          {#                    }#}
+          {#                    });#}
+          {##}
+          {#                    if(!(conclusions.find('#W').prop("checked") && conclusions.find('#U').prop("checked"))) {#}
+          {#                        conclusions.find('#R').prop("checked", false);#}
+          {#                    }#}
+
+          setTimeout(filter_zone_data, 100)
+        });
+        function filter_zone_data() {
+          console.log($('#special_shot').find('input:checked'), 'bla');
+          // $.getJSON('zone_data')
+          var url_params = '?';
+          $('#special_shot').find('input:checked').each(function (index, element) {
+            url_params += '&special_shot=' + element.id;
+            console.log(url_params, 'url_params')
+          });
+          $('#shot_type').find('input:checked').each(function (index, element) {
+            url_params += '&shot_type=' + element.id;
+            console.log(url_params, 'url_params')
+          });
+          $('#conclusion').find('input:checked').each(function (index, element) {
+            url_params += '&conclusion=' + element.id;
+            console.log(url_params, 'url_params')
+          });
+          $('#player_scoring').find('input:checked').each(function (index, element) {
+            url_params += '&player_scoring=' + element.id;
+            console.log(url_params, 'url_params')
+          });
+
+          $.getJSON('zone_data' + url_params, display_zones);
+        }
+
+        setTimeout(filter_zone_data, 100)
+      }
+
+      draw_courts_with_zones();
+      d3.select(window).on('resize', function () {
+        //TODO each time we resize we make a new request!!... Probably nonsense.
+        draw_courts_with_zones();
+      });
+
+    });
+
+  </script>
+
+  <link rel="stylesheet" type="text/css"
+        href="{% static 'own/css/tennis_court.css' %}">
+
+{% endblock %}

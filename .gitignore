@@ -1,0 +1,13 @@
+*.pyc
+*.so
+*.pyd
+*~
+tennis_mockup/drop_all_databases.txt
+tennis_mockup/curl-format.txt
+tennis_mockup/null
+tennis_mockup/.idea
+.idea
+history
+tennis_mockup/tennis_mockup/secret_key.txt
+tennis_mockup/tennis_mockup/secret_mail
+tennis_mockup/tennis_mockup/secret_db

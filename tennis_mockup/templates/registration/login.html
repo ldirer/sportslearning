@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% load static %}
+    <body>
+        <img src="{% static 'own/sportslearning.png' %}"
+             class="img-responsive col-md-offset-4 col-md-4 col-sm-6 col-sm-offset-3">
+        <div class="col-md-offset-4 col-md-4 col-sm-6 col-sm-offset-3">
+          {% if form.errors %}
+            <p class="error text-center">
+                Le mot de passe ou le nom d'utilisateur n'est pas valide.
+            </p>
+          {% endif %}
+        <form action="" method="post">
+        {%  csrf_token %}
+            <div class="form-group">
+                <div class="input-group ">
+                    <span class="input-group-addon">Nom d'utilisateur:</span>
+                    <input type="text" name="username" class="form-control"
+                         placeholder="Nom d'utilisateur" value="" id="username">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon">Mot de passe:</span>
+                  <input type="password" name="password" class="form-control"
+                         placeholder="Mot de passe" value="" id="password">
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <input class="form-control btn-success" type="submit" value="Se connecter" />
+                    <input class="form-control" type="hidden" name="next" value="{{ next|escape }}" />
+                </div>
+            </div>
+
+        </form>
+        </div>
+
+    </body>
+
+
+{% endblock %}

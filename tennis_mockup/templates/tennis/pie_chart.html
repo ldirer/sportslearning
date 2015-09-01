@@ -1,0 +1,33 @@
+{% extends 'tennis/match_stats.html' %}
+  {% block pie_chart %}
+        {% load static %}
+<link href="{% static 'external/css/nvd3.css' %}" rel="stylesheet" type="text/css">
+<style>
+    body {
+      overflow-y:scroll;
+    }
+
+    text {
+      font: 12px sans-serif;
+    }
+
+    .mypiechart {
+      width: 300px;
+      border: 2px;
+    }
+</style>
+
+<body class='with-3d-shadow with-transitions'>
+
+<h2>Répartition du nombre de coups droits et de revers</h2>
+<svg id="test1" class="mypiechart"></svg>
+
+<script type="text/javascript" src="{% static 'external/js/qunit/qunit-1.14.0.js' %}"></script>
+<script src="{% static 'external/js/d3/d3.v3.js' %}"></script>
+<script src="{% static 'external/js/d3/nvd3.js' %}"></script>
+<script type="text/javascript">
+    var match_id = "{{ match.id }}"
+</script>
+<script src="{% static 'own/js/get_shot_type_pie_chart.js' %}"></script>
+<script src="{% static 'own/js/pie_chart.js' %}"></script>
+{% endblock %}

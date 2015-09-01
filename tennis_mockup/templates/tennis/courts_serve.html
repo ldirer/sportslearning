@@ -1,0 +1,134 @@
+{% extends 'tennis/base.html' %}
+  {% block content_summary %}
+      <div class="starter-template">
+        <h1>Vous explorez le match entre {{ match.player_one.name }} et {{ match.player_two.name }}
+        </h1>
+      <h4>
+          Ici ne sont affichés que vos services<br>
+         <a href="{% url 'tennis.views.courts_with_zone_data' match.id %}">
+             Voir les coups droits et revers
+         </a>
+      </h4>
+      </div>
+  {% endblock %}
+  {% block match_stats %}
+   <div class="container-fluid">
+      {% load static %}
+        <div class="row-fluid">
+            <div class="col-md-6 col-md-offset-3" id="serve_status">
+                <div class="col-md-4 col-md-offset-2">
+                  <div class="checkbox">
+                    <label>
+                        <input type="checkbox" checked=True id='A'> Aces
+                    </label>
+                  </div>
+
+                  <div class="checkbox">
+                    <label>
+                        <input type="checkbox" checked=True id='W'> Services gagnants
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="checkbox">
+                    <label>
+                        <input type="checkbox" checked=True id='I'>Services retournés
+                    </label>
+                  </div>
+
+                  <div class="checkbox">
+                    <label>
+                        <input type="checkbox" checked=True id='O'>Services 'out'
+                    </label>
+                  </div>
+                </div>
+            </div>
+      </div>
+
+       <div class="row-fluid">
+              <div class="col-md-6 col-md-offset-3" id="court">
+                  <h2 class="text-center">Zones touchées au service</h2>
+              </div>
+      </div>
+  </div>
+
+{#    <script type="text/javascript" src="{% static 'external/css/qunit-1.14.0.css' %}"></script>#}
+{#    <script type="text/javascript" src="{% static 'external/js/qunit/qunit-1.14.0.js' %}"></script>#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+{#    <script type="text/javascript" src="{% static 'external/js/bootstrap/bootstrap.min.js' %}"></script>#}
+    <script type="text/javascript" src="{% static 'own/js/tennis_court_half_perso.js' %}"></script>
+    <script type="text/javascript" src="{% static 'own/js/draw_ellipses.js' %}"></script>
+
+    <script type="text/javascript">
+        var id = "{{ match.id }}";
+        var shot_type_verbose_names = {{ shot_type_verbose_names|safe }};
+        console.log(shot_type_verbose_names);
+        console.log(id);
+
+
+{#        $(document).ready(function() {#}
+{#            var selector_court = '#court';#}
+{#            function display_zones (data) {#}
+{#                console.log(data);#}
+{#                var zones_impact = data['zones_impact'];#}
+{#                var zones_position = data['zones_position'];#}
+{#                console.log(zones_impact);#}
+{#                zones(selector_impact, zones_impact);#}
+{#                zones(selector_placement, zones_position);#}
+{#            }#}
+{#            $.getJSON('zone_data', display_zones);#}
+{##}
+{#            d3.select(window).on('resize', function () {#}
+{#                draw_court(selector_impact);#}
+{#                draw_court(selector_placement);#}
+{#                //TODO each time we resize we make a new request!!... Probably nonsense.#}
+{#                $.getJSON('zone_data', display_zones);#}
+{#            });#}
+{##}
+{#        });#}
+
+        // Refresh data based on the user's selection.
+        $(document).ready(function() {
+            function draw_court_with_zones() {
+                var selector_court = '#court';
+                draw_court(selector_court);
+                function display_zones(data) {
+                    console.log(data, 'data from getJSON');
+                    var first_serves = data['first'];
+                    var zones_first_left = first_serves['left'];
+                    var zones_first_right = first_serves['right'];
+                    var zones_second_left = data['second']['left'];
+                    var zones_second_right = data['second']['right'];
+                    {#                console.log(zones_first_left, 'zones_left in template');#}
+                    {#                console.log(zones_first_right, 'zones_right in template');#}
+                    zones_serve(selector_court + ' > svg', zones_first_left,
+                            zones_first_right, zones_second_left,
+                            zones_second_right);
+                }
+
+                $('label, option').click(function () {
+                    setTimeout(filter_zone_data, 100)
+                });
+
+                function filter_zone_data() {
+                    var url_params = '?';
+                    $('#serve_status').find('input:checked').each(function (index, element) {
+                        url_params += '&serve_status=' + element.id;
+                        console.log(url_params, 'url_params')
+                    });
+                    $.getJSON('serves' + url_params, display_zones);
+                }
+                setTimeout(filter_zone_data, 100);
+            }
+
+            draw_court_with_zones();
+            d3.select(window).on('resize', function () {
+                //TODO each time we resize we make a new request!!... Probably nonsense.
+                draw_court_with_zones();
+            });
+        });
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'own/css/tennis_court.css' %}">
+
+  {% endblock %}

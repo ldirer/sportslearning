@@ -1,0 +1,74 @@
+{% extends 'tennis/base.html' %}
+  {% block content_summary %}
+      <div class="starter-template">
+        <h1>Vous explorez le match entre {{ match.player_one.name }} et {{ match.player_two.name }}
+        </h1>
+      </div>
+  {% endblock %}
+  {% block match_stats %}
+      <div class="container">
+      </div>
+      {% load static %}
+        <link href="{% static 'external/css/nvd3.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'own/css/piechart-dashboard.css' %}" rel="stylesheet" type="text/css">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-3 col-md-offset-3">
+                    <h4 class="text-center">Coups gagnants</h4>
+                    <svg id="winners" class="piechart-dashboard"></svg>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <h4 class="text-center">Fautes directes</h4>
+                    <svg id="unforced" class="piechart-dashboard"></svg>
+                </div>
+            </div>
+
+            <div class="row placeholders">
+                <div class="col-xs-12 col-sm-12 col-md-3 col-md-offset-3">
+                    <h4 class="text-center">Premier service</h4>
+                    <svg id="first_serve" class="piechart-dashboard"></svg>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <h4 class="text-center">Second service</h4>
+                    <svg id="second_serve" class="piechart-dashboard"></svg>
+                </div>
+            </div>
+        </div>
+{#        <script type="text/javascript" src="{% static 'external/js/qunit/qunit-1.14.0.js' %}"></script>#}
+{#        <script type="text/javascript" src="{% static 'external/js/bootstrap/bootstrap.min.js' %}"></script>#}
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
+
+{#        <script src="{% static 'external/js/d3/d3.v3.js' %}"></script> #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.5.16/nv.d3.min.js">
+    </script>
+
+{#        <script src="{% static 'external/js/d3/nvd3.js' %}"></script>#}
+        <script src="{% static 'own/js/pie_chart.js' %}"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                function draw_all_pie_charts () {
+                    $.getJSON('winners_split', function (data) {
+                        pie_chart(data, "#winners");
+                    });
+                    $.getJSON('unforced_split', function (data) {
+                        pie_chart(data, "#unforced")
+                    });
+                    $.getJSON('first_serve_split', function (data) {
+                        pie_chart(data, "#first_serve")
+                    });
+                    $.getJSON('second_serve_split', function (data) {
+                        pie_chart(data, "#second_serve")
+                    });
+                }
+                draw_all_pie_charts();
+                d3.select(window).on('resize', function () {
+                    //TODO each time we resize we make a new request!...
+                    draw_all_pie_charts();
+                    });
+            });
+        </script>
+  {% endblock %}

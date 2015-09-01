@@ -1,0 +1,27 @@
+#court, #court_placement {
+    /*width: 320px;*/
+    float: left;
+    margin-right: 1em;
+
+}
+/*#court svg {
+    background-color: #1d723d;
+}*/
+#court svg, #court_placement svg {
+    background-color: #FF6347;
+}
+#court line, #court_placement line {
+    stroke: #eee;
+    stroke-width: 1px;
+}
+
+#court line:nth-child(2), #court_placement line:nth-child(2) {
+    stroke-width: 3px;
+}
+
+#court line.x_grid, #court line.y_grid {
+    stroke: #120;
+    stroke-width: 1px;
+}
+
+pre { clear: both; }
